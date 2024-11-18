@@ -74,13 +74,26 @@ fun AlbumCoverSection(coverImageUri: Uri?, onCoverImageSelected: (Uri?) -> Unit)
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
-            .background(Color(0xFF2C2C2E), RoundedCornerShape(8.dp)),
+            .background(Color(0xFF2C2C2E), RoundedCornerShape(8.dp))
+            .clickable {
+                onCoverImageSelected(null)
+                activity?.let {
+                    it.startActivityForResult(
+                        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
+                        1001
+                    )
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             coverImageUri?.let {
                 val painter: Painter = rememberAsyncImagePainter(it)
-                Image(painter = painter, contentDescription = "Album Cover", modifier = Modifier.fillMaxSize())
+                Image(
+                    painter = painter,
+                    contentDescription = "Album Cover",
+                    modifier = Modifier.fillMaxSize()
+                )
             } ?: run {
                 Icon(
                     imageVector = Icons.Default.Download,
@@ -94,16 +107,7 @@ fun AlbumCoverSection(coverImageUri: Uri?, onCoverImageSelected: (Uri?) -> Unit)
                 text = "Download the album cover",
                 color = Color.White,
                 fontSize = 16.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.clickable {
-                    onCoverImageSelected(null)
-                    activity?.let {
-                        it.startActivityForResult(
-                            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
-                            1001
-                        )
-                    }
-                }
+                textAlign = TextAlign.Center
             )
         }
     }
